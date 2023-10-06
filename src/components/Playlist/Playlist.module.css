@@ -1,0 +1,11 @@
+.container {
+  border: 1px solid #777;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  border-bottom: 1px solid #777;
+  margin-bottom: 0.1rem;
+}

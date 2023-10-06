@@ -1,12 +1,16 @@
 import Tracklist from "../Tracklist/Tracklist";
 
+import styles from "./Playlist.module.css";
+
 const Playlist = () => {
   return (
-    <>
-      <h2>Playlist name</h2>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h2>Playlist name</h2>
+        <button>Save To Spotify</button>
+      </div>
       <Tracklist />
-      <button>Save To Spotify</button>
-    </>
+    </div>
   );
 };
 

@@ -1,0 +1,11 @@
+header {
+  text-align: center;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 80%;
+  margin: 5rem auto 2rem;
+  grid-gap: 3rem;
+}

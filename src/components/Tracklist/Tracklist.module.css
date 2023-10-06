@@ -1,0 +1,17 @@
+.container {
+  height: 55vh;
+  overflow-y: scroll;
+}
+
+.container > li:not(:last-child) {
+  margin-bottom: 0.1rem;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+.container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

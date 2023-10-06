@@ -1,9 +1,47 @@
 import Track from "../Track/Track";
 
+import styles from "./Tracklist.module.css";
+
 const Tracklist = () => {
   return (
     <>
-      <ul>
+      <ul className={styles.container}>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
+        <li>
+          <Track />
+        </li>
         <li>
           <Track />
         </li>

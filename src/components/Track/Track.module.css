@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #333;
+  padding: 0.25rem;
+}
+
+.btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-right: 1rem;
+  font-size: 1rem;
+}

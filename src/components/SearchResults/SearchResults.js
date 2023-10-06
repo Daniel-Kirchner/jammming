@@ -1,11 +1,13 @@
 import Tracklist from "../Tracklist/Tracklist";
 
+import styles from "./SearchResults.module.css";
+
 const SearchResults = () => {
   return (
-    <>
-      <h2>Searching For: asd</h2>
+    <div className={styles.container}>
+      <h2 className={styles.header}>Searching For: asd</h2>
       <Tracklist />
-    </>
+    </div>
   );
 };
 
