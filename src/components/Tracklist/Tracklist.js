@@ -2,57 +2,13 @@ import Track from "../Track/Track";
 
 import styles from "./Tracklist.module.css";
 
-const Tracklist = () => {
+const Tracklist = ({ tracks }) => {
   return (
-    <>
-      <ul className={styles.container}>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-        <li>
-          <Track />
-        </li>
-      </ul>
-    </>
+    <div className={styles.container}>
+      {tracks.map((track) => {
+        return <Track track={track} key={track.id} />;
+      })}
+    </div>
   );
 };
 

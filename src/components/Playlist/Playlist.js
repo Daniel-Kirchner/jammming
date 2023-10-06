@@ -9,7 +9,7 @@ const Playlist = () => {
         <h2>Playlist name</h2>
         <button>Save To Spotify</button>
       </div>
-      <Tracklist />
+      {/* <Tracklist /> */}
     </div>
   );
 };
