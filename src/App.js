@@ -11,7 +11,7 @@ import { mockSearchResults, mockPlaylistTracks } from "./utils/mockdata";
 function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [playlistTracks, setPlaylistTracks] = useState(mockPlaylistTracks);
-  const [playlistName, setPlaylistName] = useState("My Playlist");
+  const [playlistName, setPlaylistName] = useState("");
 
   const search = useCallback((term) => {
     const filteredResults = mockSearchResults.filter((track) =>
@@ -36,6 +36,10 @@ function App() {
     );
   }, []);
 
+  const updatePlaylistName = useCallback((name) => {
+    setPlaylistName(name);
+  }, []);
+
   return (
     <>
       <header className={styles.header}>
@@ -49,6 +53,7 @@ function App() {
           playlistName={playlistName}
           playlistTracks={playlistTracks}
           onRemove={removeTrack}
+          onNameChange={updatePlaylistName}
         />
       </main>
       <footer>

@@ -1,13 +1,35 @@
+import { useCallback, useRef } from "react";
+
 import Tracklist from "../Tracklist/Tracklist";
 
 import styles from "./Playlist.module.css";
 
-const Playlist = ({ playlistName, playlistTracks, onRemove }) => {
+const Playlist = ({ playlistTracks, onRemove, onNameChange }) => {
+  const inputRef = useRef(null);
+
+  const handleKeyUp = useCallback((event) => {
+    if (event.keyCode === 13 || event.keyCode === 27) {
+      event.preventDefault();
+      inputRef.current.blur();
+    }
+  }, []);
+  const handleNameChange = useCallback(
+    (e) => {
+      onNameChange(e.target.value);
+    },
+    [onNameChange]
+  );
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>{playlistName}</h2>
-        <button>Save To Spotify</button>
+        <input
+          className={styles.title}
+          defaultValue="New Playlist"
+          onChange={handleNameChange}
+          onKeyUp={handleKeyUp}
+          ref={inputRef}
+        />
+        <button>Save Playlist To Spotify</button>
       </div>
       <Tracklist
         tracks={playlistTracks}
