@@ -3,9 +3,9 @@ import { useCallback, useState } from "react";
 const SearchBar = ({ onSearch }) => {
   const [term, setTerm] = useState("");
 
-  const handleTermChange = (e) => {
-    setTerm(e.target.value);
-  };
+  const handleTermChange = useCallback((event) => {
+    setTerm(event.target.value);
+  }, []);
 
   const search = useCallback(
     (e) => {

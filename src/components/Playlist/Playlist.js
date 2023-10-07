@@ -2,14 +2,18 @@ import Tracklist from "../Tracklist/Tracklist";
 
 import styles from "./Playlist.module.css";
 
-const Playlist = () => {
+const Playlist = ({ playlistName, playlistTracks, onRemove }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Playlist name</h2>
+        <h2>{playlistName}</h2>
         <button>Save To Spotify</button>
       </div>
-      {/* <Tracklist /> */}
+      <Tracklist
+        tracks={playlistTracks}
+        inPLaylist={true}
+        onRemove={onRemove}
+      />
     </div>
   );
 };

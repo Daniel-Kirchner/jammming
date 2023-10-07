@@ -1,6 +1,22 @@
+import { useCallback } from "react";
+
 import styles from "./Track.module.css";
 
-const Track = ({ track }) => {
+const Track = ({ track, inPlaylist, onAdd, onRemove }) => {
+  const addTrack = useCallback(
+    (e) => {
+      onAdd(track);
+    },
+    [onAdd, track]
+  );
+
+  const removeTrack = useCallback(
+    (e) => {
+      onRemove(track);
+    },
+    [onRemove, track]
+  );
+
   return (
     <div className={styles.container}>
       <div>
@@ -9,7 +25,15 @@ const Track = ({ track }) => {
           {track.artist} | {track.album}
         </p>
       </div>
-      <button className={styles.btn}>+</button>
+      {inPlaylist ? (
+        <button className={styles.btn} onClick={removeTrack}>
+          -
+        </button>
+      ) : (
+        <button className={styles.btn} onClick={addTrack}>
+          +
+        </button>
+      )}
     </div>
   );
 };
