@@ -1,23 +1,26 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Playlist from "./components/Playlist/Playlist";
 import SearchBar from "./components/SearchBar/SearchBar";
 import SearchResults from "./components/SearchResults/SearchResults";
 
+import Spotify from "./utils/Spotify";
 import styles from "./App.module.css";
 
-import { mockSearchResults, mockPlaylistTracks } from "./utils/mockdata";
+import { mockPlaylistTracks } from "./utils/mockdata";
 
 function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [playlistTracks, setPlaylistTracks] = useState(mockPlaylistTracks);
   const [playlistName, setPlaylistName] = useState("");
+  const [token, setToken] = useState(""); // TODO: remove token state (update login button)
+
+  useEffect(() => {
+    setToken(Spotify.getAccessToken());
+  }, []);
 
   const search = useCallback((term) => {
-    const filteredResults = mockSearchResults.filter((track) =>
-      track.name.toLowerCase().includes(term.toLowerCase())
-    );
-    setSearchResults(filteredResults);
+    Spotify.search(term).then(setSearchResults);
   }, []);
 
   const addTrack = useCallback(
@@ -40,10 +43,19 @@ function App() {
     setPlaylistName(name);
   }, []);
 
+  console.log("App rendered");
+
   return (
     <>
       <header className={styles.header}>
         <h1>Jammming</h1>
+        {token ? (
+          <button onClick={() => setToken(Spotify.logout)}>Logout</button>
+        ) : (
+          <a href={Spotify.getAuthUrl()}>
+            <button>Login to Spotify</button>
+          </a>
+        )}
         <hr />
         <SearchBar onSearch={search} />
       </header>
