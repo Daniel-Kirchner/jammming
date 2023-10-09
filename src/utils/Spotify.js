@@ -1,10 +1,24 @@
-const clientId = process.env.REACT_APP_CLIENT_ID; // Spotify clientId.
-const redirectUri = "http://localhost:3000"; // Have to add this to your accepted Spotify redirect URIs on the Spotify API.
-const authEndpoint = "https://accounts.spotify.com/authorize";
-const reponseType = "token";
-
 const Spotify = {
+  async fetchData(params) {
+    const baseURL = "https://api.spotify.com/v1";
+    const token = this.getAccessToken();
+    const response = await fetch(`${baseURL}${params}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const jsonResponse = await response.json();
+    if (!jsonResponse) return;
+
+    return jsonResponse;
+  },
+
   getAuthUrl() {
+    const clientId = process.env.REACT_APP_CLIENT_ID; // Spotify clientId.
+    const redirectUri = "http://localhost:3000"; // Have to add this to your accepted Spotify redirect URIs on the Spotify API.
+    const authEndpoint = "https://accounts.spotify.com/authorize";
+    const reponseType = "token";
+
     return `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${reponseType}`;
   },
 
@@ -26,43 +40,17 @@ const Spotify = {
     return token;
   },
 
-  logout() {
-    window.localStorage.removeItem("token");
-    return "";
+  async getCurrentUser() {
+    const param = "/me";
+    return await this.fetchData(param);
   },
 
-  async getCurrentUser(token) {
-    if (!token) {
-      return {};
-    }
-    const response = await fetch(`https://api.spotify.com/v1/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const jsonResponse = await response.json();
-    if (!jsonResponse) {
-      return {};
-    }
-    console.log("Inside spotify.js " + jsonResponse);
-    return jsonResponse;
-  },
-
-  // TODO: make search method generic for types
   async search(term, type = "track") {
-    const token = this.getAccessToken();
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${term}&type=${type}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const jsonResponse = await response.json();
-    if (!jsonResponse.tracks) {
-      return [];
-    }
+    const param = `/search?q=${term}&type=${type}`;
+    const jsonResponse = await this.fetchData(param);
+
+    if (!jsonResponse.tracks) return [];
+
     return jsonResponse.tracks.items.map((track) => ({
       id: track.id,
       name: track.name,
@@ -70,6 +58,42 @@ const Spotify = {
       album: track.album.name,
       uri: track.uri,
     }));
+  },
+
+  async getUserPlaylists(userID) {
+    const param = `/users/${userID}/playlists`;
+
+    const jsonResponse = await this.fetchData(param);
+    if (!jsonResponse.items) return;
+
+    return jsonResponse.items;
+  },
+
+  async getPlaylistTracks(userID) {
+    const playlists = await this.getUserPlaylists(userID);
+    if (!playlists.length) return;
+
+    const playlistID = playlists[0].id;
+    const param = `/playlists/${playlistID}`;
+
+    const jsonResponse = await this.fetchData(param);
+    if (!jsonResponse.tracks) return;
+
+    return {
+      name: jsonResponse.name || "",
+      tracks: jsonResponse.tracks.items.map((item) => ({
+        id: item.track.id,
+        name: item.track.name,
+        artist: item.track.artists[0].name,
+        album: item.track.album.name,
+        uri: item.track.uri,
+      })),
+    };
+  },
+
+  logout() {
+    window.localStorage.removeItem("token");
+    return "";
   },
 };
 

@@ -4,7 +4,7 @@ import Tracklist from "../Tracklist/Tracklist";
 
 import styles from "./Playlist.module.css";
 
-const Playlist = ({ playlistTracks, onRemove, onNameChange }) => {
+const Playlist = ({ playlistTracks, playlistName, onRemove, onNameChange }) => {
   const inputRef = useRef(null);
 
   const handleKeyUp = useCallback((event) => {
@@ -24,7 +24,7 @@ const Playlist = ({ playlistTracks, onRemove, onNameChange }) => {
       <div className={styles.header}>
         <input
           className={styles.title}
-          defaultValue="New Playlist"
+          defaultValue={playlistName}
           onChange={handleNameChange}
           onKeyUp={handleKeyUp}
           ref={inputRef}

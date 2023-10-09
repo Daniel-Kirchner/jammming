@@ -8,25 +8,42 @@ import Spotify from "./utils/Spotify";
 import styles from "./App.module.css";
 
 function App() {
+  const [token, setToken] = useState("");
+  const [user, setUser] = useState();
   const [searchResults, setSearchResults] = useState([]);
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState("");
-  const [token, setToken] = useState(""); // TODO: remove token state (update login button)
-  const [user, setUser] = useState({});
 
   useEffect(() => {
     setToken(Spotify.getAccessToken());
   }, []);
 
   useEffect(() => {
-    if (token) {
-      Spotify.getCurrentUser(token)
-        .then((data) => setUser(data))
-        .catch((error) => console.error(error));
-    } else {
-      setUser({});
+    if (!token) {
+      setUser();
+      return;
     }
+
+    Spotify.getCurrentUser()
+      .then((data) => setUser(data))
+      .catch((error) => console.error(error));
   }, [token]);
+
+  useEffect(() => {
+    if (!user) {
+      setPlaylistTracks([]);
+      setPlaylistName("");
+      return;
+    }
+
+    Spotify.getPlaylistTracks(user.id)
+      .then((data) => {
+        if (!data) return;
+        setPlaylistTracks(data.tracks);
+        setPlaylistName(data.name);
+      })
+      .catch((error) => console.error(error));
+  }, [user]);
 
   const search = useCallback((term) => {
     Spotify.search(term).then(setSearchResults);
@@ -52,13 +69,11 @@ function App() {
     setPlaylistName(name);
   }, []);
 
-  console.log("App rendered");
-
   return (
     <>
       <header className={styles.header}>
         <h1>Jammming</h1>
-        {token ? (
+        {user ? (
           <>
             <h1>Welcome {user.display_name}</h1>
             <button onClick={() => setToken(Spotify.logout)}>Logout</button>
