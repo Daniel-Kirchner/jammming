@@ -31,6 +31,23 @@ const Spotify = {
     return "";
   },
 
+  async getCurrentUser(token) {
+    if (!token) {
+      return {};
+    }
+    const response = await fetch(`https://api.spotify.com/v1/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const jsonResponse = await response.json();
+    if (!jsonResponse) {
+      return {};
+    }
+    console.log("Inside spotify.js " + jsonResponse);
+    return jsonResponse;
+  },
+
   // TODO: make search method generic for types
   async search(term, type = "track") {
     const token = this.getAccessToken();
