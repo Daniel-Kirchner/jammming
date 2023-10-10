@@ -2,9 +2,14 @@ import { useCallback, useRef } from "react";
 
 import Tracklist from "../Tracklist/Tracklist";
 
-import styles from "./Playlist.module.css";
+import styles from "./PlaylistTracks.module.css";
 
-const Playlist = ({ playlistTracks, playlistName, onRemove, onNameChange }) => {
+const PlaylistTracks = ({
+  playlistTracks,
+  playlistName,
+  onRemove,
+  onNameChange,
+}) => {
   const inputRef = useRef(null);
 
   const handleKeyUp = useCallback((event) => {
@@ -20,7 +25,7 @@ const Playlist = ({ playlistTracks, playlistName, onRemove, onNameChange }) => {
     [onNameChange]
   );
   return (
-    <div className={styles.container}>
+    <>
       <div className={styles.header}>
         <input
           className={styles.title}
@@ -36,8 +41,8 @@ const Playlist = ({ playlistTracks, playlistName, onRemove, onNameChange }) => {
         inPLaylist={true}
         onRemove={onRemove}
       />
-    </div>
+    </>
   );
 };
 
-export default Playlist;
+export default PlaylistTracks;

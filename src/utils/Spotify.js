@@ -66,15 +66,16 @@ const Spotify = {
     const jsonResponse = await this.fetchData(param);
     if (!jsonResponse.items) return;
 
-    return jsonResponse.items;
+    return jsonResponse.items.map((item) => ({
+      id: item.id,
+      description: item.description,
+      name: item.name,
+      numberOfTracks: item.tracks.total,
+    }));
   },
 
-  async getPlaylistTracks(userID) {
-    const playlists = await this.getUserPlaylists(userID);
-    if (!playlists.length) return;
-
-    const playlistID = playlists[0].id;
-    const param = `/playlists/${playlistID}`;
+  async getPlaylistTracks(id) {
+    const param = `/playlists/${id}`;
 
     const jsonResponse = await this.fetchData(param);
     if (!jsonResponse.tracks) return;

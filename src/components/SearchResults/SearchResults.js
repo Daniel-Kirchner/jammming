@@ -5,7 +5,7 @@ import styles from "./SearchResults.module.css";
 const SearchResults = ({ searchResults, onAdd }) => {
   return (
     <div className={styles.container}>
-      <h2 className={styles.header}>Results For: asd</h2>
+      <h2 className={styles.header}>Search Results:</h2>
       <Tracklist tracks={searchResults} inPLaylist={false} onAdd={onAdd} />
     </div>
   );
