@@ -7,7 +7,7 @@ import PlaylistTracks from "../PlaylistTracks/PlaylistTracks";
 
 import styles from "./Main.module.css";
 
-const Main = ({ searchResults, user }) => {
+const Main = ({ searchResults, user, removeOnAdd }) => {
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState("");
@@ -42,8 +42,9 @@ const Main = ({ searchResults, user }) => {
         return;
 
       setPlaylistTracks((prevTracks) => [...prevTracks, track]);
+      removeOnAdd(track);
     },
-    [playlistTracks]
+    [playlistTracks, removeOnAdd]
   );
 
   const removeTrack = useCallback((track) => {

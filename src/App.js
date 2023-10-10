@@ -29,6 +29,12 @@ export function App() {
     Spotify.search(term).then(setSearchResults);
   }, []);
 
+  const removeOnAdd = useCallback((track) => {
+    setSearchResults((prevTracks) =>
+      prevTracks.filter((currentTrack) => currentTrack.id !== track.id)
+    );
+  }, []);
+
   return (
     <>
       <header className={styles.headers}>
@@ -48,7 +54,11 @@ export function App() {
         )}
       </header>
       <hr />
-      <Main searchResults={searchResults} user={user} />
+      <Main
+        searchResults={searchResults}
+        user={user}
+        removeOnAdd={removeOnAdd}
+      />
       <footer>
         <p>Made by Daniel Kirchner</p>
       </footer>
