@@ -40,11 +40,12 @@ const Main = ({ searchResults, user, removeOnAdd }) => {
     (track) => {
       if (playlistTracks.some((savedTrack) => savedTrack.id === track.id))
         return;
+      if (!playlistName) setPlaylistName("New Playlist");
 
       setPlaylistTracks((prevTracks) => [...prevTracks, track]);
       removeOnAdd(track);
     },
-    [playlistTracks, removeOnAdd]
+    [playlistTracks, playlistName, removeOnAdd]
   );
 
   const removeTrack = useCallback((track) => {
@@ -57,15 +58,20 @@ const Main = ({ searchResults, user, removeOnAdd }) => {
     setPlaylistName(name);
   }, []);
 
-  return (
+  const removeTracksState = useCallback(() => {
+    setPlaylistName("");
+    setPlaylistTracks([]);
+  }, []);
+
+  return user ? (
     <main>
       <SearchResults searchResults={searchResults} onAdd={addTrack} />
       <div className={styles.container}>
-        {!playlistTracks.length ? (
+        {!(playlistName || playlistTracks.length) ? (
           <PlaylistList
             playlists={userPlaylists}
             onShowTracks={showTracks}
-            user={user}
+            handleCreatePlaylist={updatePlaylistName}
           />
         ) : (
           <PlaylistTracks
@@ -73,10 +79,13 @@ const Main = ({ searchResults, user, removeOnAdd }) => {
             playlistTracks={playlistTracks}
             onRemove={removeTrack}
             onNameChange={updatePlaylistName}
+            onBack={removeTracksState}
           />
         )}
       </div>
     </main>
+  ) : (
+    <h1>Please Log in to Spotify!</h1>
   );
 };
 

@@ -3,7 +3,7 @@ import PlaylistListItem from "../PlaylistItem/PlaylistItem";
 
 import styles from "./PlaylistList.module.css";
 
-const PlaylistList = ({ playlists, onShowTracks, user }) => {
+const PlaylistList = ({ playlists, onShowTracks, handleCreatePlaylist }) => {
   const handleShowTracks = useCallback(
     (id) => {
       onShowTracks(id);
@@ -15,7 +15,9 @@ const PlaylistList = ({ playlists, onShowTracks, user }) => {
     <>
       <div className={styles.header}>
         <h2>My Public Playlists:</h2>
-        {user && <button>Create New Playlist</button>}
+        <button onClick={() => handleCreatePlaylist("New Playlist")}>
+          Create New Playlist
+        </button>
       </div>
       <div className={styles.container}>
         {playlists.map((playlist) => {

@@ -9,6 +9,7 @@ const PlaylistTracks = ({
   playlistName,
   onRemove,
   onNameChange,
+  onBack,
 }) => {
   const inputRef = useRef(null);
 
@@ -24,17 +25,23 @@ const PlaylistTracks = ({
     },
     [onNameChange]
   );
+
+  const handleBack = useCallback(() => {
+    onBack();
+  }, [onBack]);
+
   return (
     <>
+      <button onClick={handleBack}>{"<"}</button>
       <div className={styles.header}>
         <input
           className={styles.title}
-          defaultValue={playlistName}
+          defaultValue={playlistName || "New Playlist"}
           onChange={handleNameChange}
           onKeyUp={handleKeyUp}
           ref={inputRef}
         />
-        <button>Save Playlist To Spotify</button>
+        <button>Update Playlist</button>
       </div>
       <Tracklist
         tracks={playlistTracks}
