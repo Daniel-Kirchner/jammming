@@ -7,9 +7,11 @@ import styles from "./PlaylistTracks.module.css";
 const PlaylistTracks = ({
   playlistTracks,
   playlistName,
+  playlistID,
   onRemove,
   onNameChange,
   onBack,
+  createPlaylist,
 }) => {
   const inputRef = useRef(null);
 
@@ -30,6 +32,11 @@ const PlaylistTracks = ({
     onBack();
   }, [onBack]);
 
+  const handleCreate = useCallback(() => {
+    createPlaylist();
+    handleBack();
+  }, [createPlaylist, handleBack]);
+
   return (
     <>
       <button onClick={handleBack}>{"<"}</button>
@@ -41,7 +48,11 @@ const PlaylistTracks = ({
           onKeyUp={handleKeyUp}
           ref={inputRef}
         />
-        <button>Update Playlist</button>
+        {playlistID ? (
+          <button>Update Playlist</button>
+        ) : (
+          <button onClick={handleCreate}>Create Playlist</button>
+        )}
       </div>
       <Tracklist
         tracks={playlistTracks}

@@ -1,5 +1,5 @@
 const Spotify = {
-  async fetchData(params) {
+  async getData(params) {
     const baseURL = "https://api.spotify.com/v1";
     const token = this.getAccessToken();
     const response = await fetch(`${baseURL}${params}`, {
@@ -18,8 +18,10 @@ const Spotify = {
     const redirectUri = "http://localhost:3000"; // Have to add this to your accepted Spotify redirect URIs on the Spotify API.
     const authEndpoint = "https://accounts.spotify.com/authorize";
     const reponseType = "token";
+    const scope =
+      "user-read-private user-read-email playlist-modify-public playlist-modify-private playlist-read-private";
 
-    return `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${reponseType}`;
+    return `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${reponseType}&scope=${scope}`;
   },
 
   getAccessToken() {
@@ -42,12 +44,12 @@ const Spotify = {
 
   async getCurrentUser() {
     const param = "/me";
-    return await this.fetchData(param);
+    return await this.getData(param);
   },
 
   async search(term, type = "track") {
     const param = `/search?q=${term}&type=${type}`;
-    const jsonResponse = await this.fetchData(param);
+    const jsonResponse = await this.getData(param);
 
     if (!jsonResponse.tracks) return [];
 
@@ -63,7 +65,7 @@ const Spotify = {
   async getUserPlaylists(userID) {
     const param = `/users/${userID}/playlists`;
 
-    const jsonResponse = await this.fetchData(param);
+    const jsonResponse = await this.getData(param);
     if (!jsonResponse.items) return;
 
     return jsonResponse.items.map((item) => ({
@@ -77,7 +79,7 @@ const Spotify = {
   async getPlaylistTracks(id) {
     const param = `/playlists/${id}`;
 
-    const jsonResponse = await this.fetchData(param);
+    const jsonResponse = await this.getData(param);
     if (!jsonResponse.tracks) return;
 
     return {
@@ -90,6 +92,70 @@ const Spotify = {
         uri: item.track.uri,
       })),
     };
+  },
+
+  async createPlaylist(name) {
+    const baseURL = "https://api.spotify.com/v1";
+    const token = this.getAccessToken();
+    try {
+      const response = await fetch(`${baseURL}/me/playlists/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          description: "A playlist created with the Spotify Web API",
+        }),
+      });
+      const jsonResponse = await response.json();
+      return {
+        id: jsonResponse.id,
+        name: jsonResponse.name,
+        description: jsonResponse.description,
+        numberOfTracks: jsonResponse.tracks.total,
+      };
+    } catch (error) {
+      console.error("Error creating playlist:", error);
+    }
+  },
+
+  async unFollowPlaylist(id) {
+    const baseURL = "https://api.spotify.com/v1";
+    const token = this.getAccessToken();
+    try {
+      const response = await fetch(`${baseURL}/playlists/${id}/followers`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) return true;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  },
+
+  async addItemsToPlaylist(id, tracks) {
+    const baseURL = "https://api.spotify.com/v1";
+    const token = this.getAccessToken();
+    const uris = tracks.map((track) => track.uri);
+
+    try {
+      await fetch(`${baseURL}/playlists/${id}/tracks/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uris: uris,
+        }),
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
   },
 
   logout() {

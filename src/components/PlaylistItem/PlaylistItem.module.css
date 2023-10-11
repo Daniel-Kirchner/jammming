@@ -6,3 +6,7 @@
   padding: 0.25rem;
   cursor: pointer;
 }
+
+.playlistData {
+  width: 100%;
+}

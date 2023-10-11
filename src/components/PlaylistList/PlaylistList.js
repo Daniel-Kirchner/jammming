@@ -3,7 +3,12 @@ import PlaylistListItem from "../PlaylistItem/PlaylistItem";
 
 import styles from "./PlaylistList.module.css";
 
-const PlaylistList = ({ playlists, onShowTracks, handleCreatePlaylist }) => {
+const PlaylistList = ({
+  playlists,
+  onShowTracks,
+  handleCreatePlaylist,
+  unFollowPlaylist,
+}) => {
   const handleShowTracks = useCallback(
     (id) => {
       onShowTracks(id);
@@ -14,7 +19,7 @@ const PlaylistList = ({ playlists, onShowTracks, handleCreatePlaylist }) => {
   return (
     <>
       <div className={styles.header}>
-        <h2>My Public Playlists:</h2>
+        <h2>My Playlists:</h2>
         <button onClick={() => handleCreatePlaylist("New Playlist")}>
           Create New Playlist
         </button>
@@ -26,6 +31,7 @@ const PlaylistList = ({ playlists, onShowTracks, handleCreatePlaylist }) => {
               playlist={playlist}
               key={playlist.id}
               onShowTracks={() => handleShowTracks(playlist.id)}
+              unFollowPlaylist={unFollowPlaylist}
             />
           );
         })}

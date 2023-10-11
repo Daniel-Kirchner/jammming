@@ -11,6 +11,7 @@ const Main = ({ searchResults, user, removeOnAdd }) => {
   const [userPlaylists, setUserPlaylists] = useState([]);
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState("");
+  const [playlistID, setPlaylistID] = useState();
 
   useEffect(() => {
     if (!user) {
@@ -26,14 +27,12 @@ const Main = ({ searchResults, user, removeOnAdd }) => {
       .catch((error) => console.error(error));
   }, [user]);
 
-  const showTracks = useCallback((id) => {
-    Spotify.getPlaylistTracks(id)
-      .then((data) => {
-        if (!data) return;
-        setPlaylistTracks(data.tracks);
-        setPlaylistName(data.name);
-      })
-      .catch((error) => console.error(error));
+  const showTracks = useCallback(async (id) => {
+    const data = await Spotify.getPlaylistTracks(id);
+    if (!data) return;
+    setPlaylistTracks(data.tracks);
+    setPlaylistName(data.name);
+    setPlaylistID(id);
   }, []);
 
   const addTrack = useCallback(
@@ -58,9 +57,28 @@ const Main = ({ searchResults, user, removeOnAdd }) => {
     setPlaylistName(name);
   }, []);
 
-  const removeTracksState = useCallback(() => {
+  const removePlaylistState = useCallback(() => {
     setPlaylistName("");
     setPlaylistTracks([]);
+    setPlaylistID();
+  }, []);
+
+  const createPlaylist = useCallback(async () => {
+    const playlist = await Spotify.createPlaylist(playlistName);
+    if (!playlist.id) return;
+    if (playlistTracks.length) {
+      await Spotify.addItemsToPlaylist(playlist.id, playlistTracks);
+      playlist.numberOfTracks = playlistTracks.length;
+    }
+    setUserPlaylists((prevPlaylists) => [...prevPlaylists, playlist]);
+  }, [playlistName, playlistTracks]);
+
+  const unFollowPlaylist = useCallback(async (id) => {
+    if (await Spotify.unFollowPlaylist(id)) {
+      setUserPlaylists((prevPlaylists) =>
+        prevPlaylists.filter((playlist) => playlist.id !== id)
+      );
+    }
   }, []);
 
   return user ? (
@@ -72,14 +90,17 @@ const Main = ({ searchResults, user, removeOnAdd }) => {
             playlists={userPlaylists}
             onShowTracks={showTracks}
             handleCreatePlaylist={updatePlaylistName}
+            unFollowPlaylist={unFollowPlaylist}
           />
         ) : (
           <PlaylistTracks
             playlistName={playlistName}
             playlistTracks={playlistTracks}
+            playlistID={playlistID}
             onRemove={removeTrack}
             onNameChange={updatePlaylistName}
-            onBack={removeTracksState}
+            onBack={removePlaylistState}
+            createPlaylist={createPlaylist}
           />
         )}
       </div>
