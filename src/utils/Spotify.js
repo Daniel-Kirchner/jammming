@@ -2,15 +2,19 @@ const Spotify = {
   async getData(params) {
     const baseURL = "https://api.spotify.com/v1";
     const token = this.getAccessToken();
-    const response = await fetch(`${baseURL}${params}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const jsonResponse = await response.json();
-    if (!jsonResponse) return;
+    try {
+      const response = await fetch(`${baseURL}${params}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const jsonResponse = await response.json();
+      if (!jsonResponse) return;
 
-    return jsonResponse;
+      return jsonResponse;
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   getAuthUrl() {
